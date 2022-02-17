@@ -99,6 +99,14 @@ impl<T: GameTraits> ItemCollection<T> {
         }
         games
     }
+    pub fn get_item_with_genre(&self, genre_name: &str) -> Vec<&T> {
+        let gs = self.items.iter().filter(|&item| item.get_genres().contains(&genre_name.to_string()));
+        let mut games: Vec<&T> = Vec::new();
+        for game in gs {
+            games.push(game);
+        }
+        games
+    }
 }
 
 #[cfg(test)]
@@ -118,6 +126,22 @@ mod collection_games_test {
         games.push(g2);
         let collection = ItemCollection::new(games);
         let g1_test = collection.get_item_with_tag("tag1");
+        assert_eq!(g1_test[0].name,"to be found".to_string());
+        assert_eq!(g1_test.len(),1);
+    }
+    #[test]
+    fn collection_get_by_genre() {
+        let mut games: Vec<Game> = Vec::new();
+        let mut g1 = Game::new();
+        g1.name = "to be found".to_string();
+        g1.genres = vec!["ge1".to_string()];
+        games.push(g1);
+        let mut g2 = Game::new();
+        g2.name = "not to be found".to_string();
+        g2.genres = vec!["ge2".to_string()];
+        games.push(g2);
+        let collection = ItemCollection::new(games);
+        let g1_test = collection.get_item_with_genre("ge1");
         assert_eq!(g1_test[0].name,"to be found".to_string());
         assert_eq!(g1_test.len(),1);
     }
