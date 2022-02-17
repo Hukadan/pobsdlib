@@ -91,9 +91,37 @@ mod collection_items_test {
 
 
 impl<T: GameTraits> ItemCollection<T> {
+    pub fn get_item_with_tag(&self, tag_name: &str) -> Vec<&T> {
+        let gs = self.items.iter().filter(|&item| item.get_tags().contains(&tag_name.to_string()));
+        let mut games: Vec<&T> = Vec::new();
+        for game in gs {
+            games.push(game);
+        }
+        games
+    }
 }
 
-
+#[cfg(test)]
+mod collection_games_test {
+    use super::*;
+    use models::Game;
+    #[test]
+    fn collection_get_by_tag() {
+        let mut games: Vec<Game> = Vec::new();
+        let mut g1 = Game::new();
+        g1.name = "to be found".to_string();
+        g1.tags = vec!["tag1".to_string()];
+        games.push(g1);
+        let mut g2 = Game::new();
+        g2.name = "not to be found".to_string();
+        g2.tags = vec!["tag2".to_string()];
+        games.push(g2);
+        let collection = ItemCollection::new(games);
+        let g1_test = collection.get_item_with_tag("tag1");
+        assert_eq!(g1_test[0].name,"to be found".to_string());
+        assert_eq!(g1_test.len(),1);
+    }
+}
 
 pub struct DataBase<G, T, K> {
     pub games: ItemCollection<G>,
