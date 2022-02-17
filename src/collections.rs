@@ -1,4 +1,5 @@
-use crate::models::{ItemTraits, GameTraits};
+use crate::models::{GameTraits, ItemTraits, Item, Game, Line};
+use crate::utils::{game_dispatch, read_lines};
 
 #[derive(Serialize, Default)]
 pub struct ItemCollection<T> {
@@ -89,10 +90,12 @@ mod collection_items_test {
     }
 }
 
-
 impl<T: GameTraits> ItemCollection<T> {
     pub fn get_item_with_tag(&self, tag_name: &str) -> Vec<&T> {
-        let gs = self.items.iter().filter(|&item| item.get_tags().contains(&tag_name.to_string()));
+        let gs = self
+            .items
+            .iter()
+            .filter(|&item| item.get_tags().contains(&tag_name.to_string()));
         let mut games: Vec<&T> = Vec::new();
         for game in gs {
             games.push(game);
@@ -100,7 +103,10 @@ impl<T: GameTraits> ItemCollection<T> {
         games
     }
     pub fn get_item_with_genre(&self, genre_name: &str) -> Vec<&T> {
-        let gs = self.items.iter().filter(|&item| item.get_genres().contains(&genre_name.to_string()));
+        let gs = self
+            .items
+            .iter()
+            .filter(|&item| item.get_genres().contains(&genre_name.to_string()));
         let mut games: Vec<&T> = Vec::new();
         for game in gs {
             games.push(game);
@@ -126,8 +132,8 @@ mod collection_games_test {
         games.push(g2);
         let collection = ItemCollection::new(games);
         let g1_test = collection.get_item_with_tag("tag1");
-        assert_eq!(g1_test[0].name,"to be found".to_string());
-        assert_eq!(g1_test.len(),1);
+        assert_eq!(g1_test[0].name, "to be found".to_string());
+        assert_eq!(g1_test.len(), 1);
     }
     #[test]
     fn collection_get_by_genre() {
@@ -142,18 +148,33 @@ mod collection_games_test {
         games.push(g2);
         let collection = ItemCollection::new(games);
         let g1_test = collection.get_item_with_genre("ge1");
-        assert_eq!(g1_test[0].name,"to be found".to_string());
-        assert_eq!(g1_test.len(),1);
+        assert_eq!(g1_test[0].name, "to be found".to_string());
+        assert_eq!(g1_test.len(), 1);
     }
 }
 
-pub struct DataBase<G, T, K> {
-    pub games: ItemCollection<G>,
-    pub tags: ItemCollection<T>,
-    pub genres: ItemCollection<K>,
+pub struct DataBase {
+    pub games: ItemCollection<Game>,
+    pub tags: ItemCollection<Item>,
+    pub genres: ItemCollection<Item>,
 }
 
-impl<G, T, K> DataBase<G, T, K> {
+impl DataBase {
+    pub fn new(filename: &str) -> Self {
+        let mut games: ItemCollection<Game> = ItemCollection::default();
+        let tags: ItemCollection<Item> = ItemCollection::default();
+        let genres: ItemCollection<Item> = ItemCollection::default();
+        if let Ok(lines) = read_lines(filename) {
+            for line in lines.flatten() {
+                game_dispatch(Line::from(&line), &mut games);
+            }
+        }
+        Self {
+            games,
+            tags,
+            genres,
+        }
+    }
     // Game methods
     pub fn get_games_count(&self) -> &usize {
         &self.games.count
