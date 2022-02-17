@@ -73,6 +73,12 @@ mod line_tests {
             ) == line
         );
     }
+    #[test]
+    #[should_panic]
+    fn panic_line() {
+        let input = "Let's panic";
+        Line::from(&input);
+    }
 }
 
 /// # Represent an item, at the moment a tag or a genre
