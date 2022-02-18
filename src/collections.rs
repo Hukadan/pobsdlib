@@ -1,5 +1,4 @@
-use crate::models::{Game, GameTraits, Item, ItemTraits, Line};
-use crate::utils::{game_dispatch, read_lines};
+use crate::models::{GameTraits, ItemTraits};
 
 #[derive(Serialize, Default)]
 pub struct ItemCollection<T> {
@@ -150,42 +149,5 @@ mod collection_games_test {
         let g1_test = collection.get_item_with_genre("ge1");
         assert_eq!(g1_test[0].name, "to be found".to_string());
         assert_eq!(g1_test.len(), 1);
-    }
-}
-
-pub struct DataBase {
-    pub games: ItemCollection<Game>,
-    pub tags: ItemCollection<Item>,
-    pub genres: ItemCollection<Item>,
-}
-
-impl DataBase {
-    pub fn new(filename: &str) -> Self {
-        let mut games: ItemCollection<Game> = ItemCollection::default();
-        let tags: ItemCollection<Item> = ItemCollection::default();
-        let genres: ItemCollection<Item> = ItemCollection::default();
-        if let Ok(lines) = read_lines(filename) {
-            for line in lines.flatten() {
-                game_dispatch(Line::from(&line), &mut games);
-            }
-        }
-        Self {
-            games,
-            tags,
-            genres,
-        }
-    }
-    // Game methods
-    pub fn get_games_count(&self) -> &usize {
-        &self.games.count
-    }
-    // Move the function below to item collection
-    // Tag methods
-    pub fn get_tags_count(&self) -> &usize {
-        &self.tags.count
-    }
-    // Genre methods
-    pub fn get_genres_count(&self) -> &usize {
-        &self.genres.count
     }
 }

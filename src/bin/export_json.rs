@@ -1,6 +1,6 @@
 extern crate pobsdlib;
 extern crate serde_json;
-use pobsdlib::collections::DataBase;
+use pobsdlib::DataBase;
 
 fn main() {
     let db_game = DataBase::new("/home/hukadan/Projects/Rust/Learning/pobsdlib/games.db");
