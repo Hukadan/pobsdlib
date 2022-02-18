@@ -32,17 +32,16 @@ impl DataBase {
             genres,
         }
     }
-    // Game methods
-    pub fn get_games_count(&self) -> &usize {
-        &self.games.count
+    /// Return the number of games in the database
+    pub fn get_games_count(&self) -> usize {
+        self.games.get_count()
     }
-    // Move the function below to item collection
-    // Tag methods
-    pub fn get_tags_count(&self) -> &usize {
-        &self.tags.count
+    /// Return the number of tags in the database
+    pub fn get_tags_count(&self) -> usize {
+        self.tags.get_count()
     }
-    // Genre methods
-    pub fn get_genres_count(&self) -> &usize {
-        &self.genres.count
+    /// Return the number of genres in the database
+    pub fn get_genres_count(&self) -> usize {
+        self.genres.get_count()
     }
 }
