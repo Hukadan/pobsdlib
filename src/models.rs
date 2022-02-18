@@ -33,15 +33,22 @@ impl Line {
         // sould panic if the disctinction cannot be made
         match left {
             "Game" => Line::NewGame(right.to_string()),
-            "Cover" | "Engine" | "Setup" | "Runtime" | "Store" | "Hints" | "Year" | "Dev"
+            "Cover" | "Engine" | "Setup" | "Runtime" | "Hints" | "Year" | "Dev"
             | "Pub" | "Version" | "Status" => Line::SingleItem(left.to_string(), right.to_string()),
+            "Store" => {
+                let mut items: Vec<String> = Vec::new();
+                for item in right.split(' ') {
+                    items.push(item.trim().to_string());
+                }
+                Line::MultipleItems(left.to_string(), items)
+            },
             "Genre" | "Tags" => {
                 let mut items: Vec<String> = Vec::new();
                 for item in right.split(',') {
                     items.push(item.trim().to_string());
                 }
                 Line::MultipleItems(left.to_string(), items)
-            }
+            },
             _ => panic!("Unkown filed {}", left),
         }
     }
@@ -143,7 +150,7 @@ pub struct Game {
     pub engine: String,
     pub setup: String,
     pub runtime: String,
-    pub store: String,
+    pub store: Vec<String>,
     pub hints: String,
     pub genres: Vec<String>,
     pub tags: Vec<String>,
@@ -179,7 +186,6 @@ impl GameTraits for Game {
                     "Engine" => self.engine = right,
                     "Setup" => self.setup = right,
                     "Runtime" => self.runtime = right,
-                    "Store" => self.store = right,
                     "Hints" => self.hints = right,
                     "Year" => self.year = right,
                     "Dev" => self.dev = right,
@@ -191,6 +197,7 @@ impl GameTraits for Game {
             }
             Line::MultipleItems(left, right) => {
                 match left.as_str() {
+                    "Store" => self.store = right,
                     "Tags" => self.tags = right,
                     "Genre" => self.genres = right,
                     _ => panic!("unknown multiple item field: unable to set"),
@@ -264,13 +271,6 @@ mod game_tests {
         assert_eq!(game.runtime, "Test".to_string());
     }
     #[test]
-    fn game_update_store() {
-        let mut game = Game::new();
-        let line = Line::SingleItem("Store".to_string(), "Test".to_string());
-        game.update(line);
-        assert_eq!(game.store, "Test".to_string());
-    }
-    #[test]
     fn game_update_hints() {
         let mut game = Game::new();
         let line = Line::SingleItem("Hints".to_string(), "Test".to_string());
@@ -318,6 +318,16 @@ mod game_tests {
         let mut game = Game::new();
         let line = Line::SingleItem("Panic".to_string(), "Test".to_string());
         game.update(line);
+    }
+    #[test]
+    fn game_update_store() {
+        let mut game = Game::new();
+        let line = Line::MultipleItems(
+            "Store".to_string(),
+            vec!["ST1".to_string(), "ST2".to_string()],
+        );
+        game.update(line);
+        assert_eq!(game.store, vec!["ST1".to_string(), "ST2".to_string()]);
     }
     #[test]
     fn game_update_tags() {
