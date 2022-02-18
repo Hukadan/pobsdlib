@@ -6,8 +6,14 @@ Library in Rust to read the PlayOnBSD database
 
 
 ### How to use it
-At the moment you have to edit the file `src/bin/export_json.rs` and change 
-the path of the database to yours, then run `cargo run`.
+You first need to compile the library and the binary.
+```
+$ cargo build --release
+```
 
-I plan to improve this soon(ish).
+In the`target/release/` folder, you should find the binary `database2json`.
 
+You can execute it with a database as argument:
+```
+$ ./database2json /path/to/your/database.db
+```
