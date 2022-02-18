@@ -20,6 +20,9 @@ impl<T: ItemTraits> ItemCollection<T> {
     pub fn display(&self) {
         println!("to be implemented");
     }
+    pub fn get_count(&self) -> usize {
+        self.count
+    }
     pub fn get_item_by_id(&self, id: usize) -> Option<&T> {
         match self.items.get(id - 1) {
             Some(item) => Some(item),
@@ -49,7 +52,7 @@ mod collection_items_test {
         let item = Item::new();
         let items = vec![item];
         let collection = ItemCollection::new(items);
-        assert!(collection.count == 1);
+        assert_eq!(collection.get_count(),1);
     }
     #[test]
     fn collection_add_item() {
