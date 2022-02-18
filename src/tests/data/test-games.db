@@ -1,0 +1,112 @@
+Game	AaaaaAAaaaAAAaaAAAAaAAAAA!!! for the Awesome
+Cover	AaaaaA_for_the_Awesome_Cover.jpg
+Engine
+Setup
+Runtime	HumblePlay
+Store	https://www.humblebundle.com/store/aaaaaaaaaaaaaaaaaaaaaaaaa-for-the-awesome
+Hints	Demo on HumbleBundle store page
+Genre
+Tags
+Year	2011
+Dev
+Pub
+Version
+Status
+Game	The Adventures of Shuggy
+Cover	Adventures_of_Shuggy_The_-_cover.png
+Engine	FNA
+Setup	fnaify
+Runtime
+Store	https://store.steampowered.com/app/211440/Adventures_of_Shuggy/ https://www.gog.com/game/the_adventures_of_shuggy
+Hints
+Genre	Puzzle Platformer
+Tags	indie
+Year	2012
+Dev	Smudged Cat Games
+Pub
+Version
+Status
+Game	Aedemphia
+Cover	aedemphia.png
+Engine	RPG Maker
+Setup
+Runtime	easyrpg
+Store	http://www.aedemphia-rpg.net/
+Hints	https://www.reddit.com/r/openbsd_gaming/comments/g8o27l/aedemphia_works_in_openbsd_with_easyrpg_engine/ Reddit post
+Genre	RPG
+Tags	free
+Year
+Dev
+Pub
+Version
+Status
+Game	Aeternum
+Cover
+Engine	FNA
+Setup
+Runtime	fnaify
+Store	https://store.steampowered.com/app/454750/Aeternum/ http://wastedbrilliance.com/games/aeternum/ https://brooksbishop.itch.io/aeternum
+Hints	needs libCSteamworks library
+Genre	shmup
+Tags	manga, bullethell, anime, indie
+Year	2017
+Dev	Creaky Lantern Games
+Pub	Creaky Lantern Games
+Version
+Status	runs (2021-11-27)
+Game	Airships: Conquer the Skies
+Cover	Airships_ConquerTheSkies_logo.jpg
+Engine	lwjgl
+Setup	lwjgl
+Runtime	lwjgl
+Store	https://www.gog.com/game/airships_conquer_the_skies https://zarkonnen.itch.io/airships
+Hints	copy liblwjgl64.so and libopenal.so* (as libopenal64.so) into java.library.path
+Genre	RTS
+Tags
+Year	2018
+Dev	David Stark
+Pub
+Version
+Status	works with some setup steps required
+Game	Akane the Kunoichi
+Cover	Akane_the_Kunoichi_cover.jpg
+Engine	XNA
+Setup	fnaify
+Runtime
+Store	https://store.steampowered.com/app/291130/Akane_the_Kunoichi
+Hints
+Genre	Platformer
+Tags
+Year	2014
+Dev	Haruneko Entertainment
+Pub
+Version
+Status
+Game	Always Sometimes Monsters
+Cover	Always_Sometimes_Monsters.jpg
+Engine	NW.js
+Setup
+Runtime	HTML5
+Store	https://www.gog.com/game/always_sometimes_monsters https://store.steampowered.com/app/274310/Always_Sometimes_Monsters/
+Hints	open index.html in www subdirectory (Linux version)
+Genre	RPG
+Tags
+Year	2014
+Dev
+Pub
+Version
+Status	manual setup needed
+Game	Amazing Princess Sarah
+Cover	Amazing_Princess_Sarah_cover.jpg
+Engine	XNA
+Setup	fnaify
+Runtime
+Store	https://store.steampowered.com/app/315850/Amazing_Princess_Sarah/
+Hints
+Genre	Platformer
+Tags
+Year	2014
+Dev	Haruneko Entertainment
+Pub
+Version
+Status
