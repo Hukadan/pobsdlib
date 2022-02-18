@@ -1,3 +1,5 @@
+[![Rust](https://github.com/Hukadan/pobsdlib/actions/workflows/rust.yml/badge.svg?branch=main)](https://github.com/Hukadan/pobsdlib/actions/workflows/rust.yml)
+
 ### pobsdlib
 Library in Rust to read the PlayOnBSD database 
 (https://github.com/playonbsd/OpenBSD-Games-Database.)
