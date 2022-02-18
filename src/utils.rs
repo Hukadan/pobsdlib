@@ -60,13 +60,10 @@ mod tests {
     }
 }
 
-pub fn game_dispatch<T: Default + ItemTraits + GameTraits>(
-    line: Line,
-    games: &mut ItemCollection<T>,
-) {
+pub fn game_dispatch(line: Line, games: &mut ItemCollection<Game>) {
     match line {
         Line::NewGame(_) => {
-            let mut game = T::default();
+            let mut game = Game::default();
             game.set_id(games.count + 1);
             game.update(line);
             games.add_item(game);
