@@ -52,7 +52,7 @@ mod collection_items_test {
         let item = Item::new();
         let items = vec![item];
         let collection = ItemCollection::new(items);
-        assert_eq!(collection.get_count(),1);
+        assert_eq!(collection.get_count(), 1);
     }
     #[test]
     fn collection_add_item() {
