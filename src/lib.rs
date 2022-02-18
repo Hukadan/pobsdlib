@@ -6,9 +6,9 @@ mod utils;
 // public api
 mod collections;
 
-use crate::utils::{game_dispatch, read_lines};
+use crate::utils::load_database;
 use collections::ItemCollection;
-use models::{Game, Item, Line};
+use models::{Game, Item};
 
 pub struct DataBase {
     pub games: ItemCollection<Game>,
@@ -21,11 +21,7 @@ impl DataBase {
         let mut games: ItemCollection<Game> = ItemCollection::default();
         let tags: ItemCollection<Item> = ItemCollection::default();
         let genres: ItemCollection<Item> = ItemCollection::default();
-        if let Ok(lines) = read_lines(filename) {
-            for line in lines.flatten() {
-                game_dispatch(Line::from(&line), &mut games);
-            }
-        }
+        load_database(filename, &mut games);
         Self {
             games,
             tags,

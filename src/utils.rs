@@ -1,5 +1,5 @@
 use crate::collections::ItemCollection;
-use crate::models::{GameTraits, ItemTraits, Line};
+use crate::models::{Game, GameTraits, ItemTraits, Line};
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
@@ -85,4 +85,12 @@ where
 {
     let file = File::open(filename)?;
     Ok(io::BufReader::new(file).lines())
+}
+
+pub fn load_database(filename: &str, games: &mut ItemCollection<Game>) {
+    if let Ok(lines) = read_lines(filename) {
+        for line in lines.flatten() {
+            game_dispatch(Line::from(&line), games);
+        }
+    }
 }
