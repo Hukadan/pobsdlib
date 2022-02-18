@@ -72,8 +72,9 @@ mod collection_items_test {
         item2_bis.name = "item 2".to_string();
         let items = vec![item1, item2];
         let collection = ItemCollection::new(items);
-        if let Some(item_check) = collection.get_item_by_name("item 2") {
-            assert!(item2_bis == *item_check);
+        match collection.get_item_by_name("item 2") {
+            Some(item_check) => assert!(item2_bis == *item_check),
+            None => panic!("Should have found item"),
         }
     }
     #[test]
@@ -86,8 +87,9 @@ mod collection_items_test {
         item2_bis.id = 2;
         let items = vec![item1, item2];
         let collection = ItemCollection::new(items);
-        if let Some(item_check) = collection.get_item_by_id(2) {
-            assert!(item2_bis == *item_check);
+        match collection.get_item_by_id(2) {
+            Some(item_check) => assert!(item2_bis == *item_check),
+            None => panic!("Should have found item"),
         }
     }
 }
