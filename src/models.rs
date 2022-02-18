@@ -33,22 +33,22 @@ impl Line {
         // sould panic if the disctinction cannot be made
         match left {
             "Game" => Line::NewGame(right.to_string()),
-            "Cover" | "Engine" | "Setup" | "Runtime" | "Hints" | "Year" | "Dev"
-            | "Pub" | "Version" | "Status" => Line::SingleItem(left.to_string(), right.to_string()),
+            "Cover" | "Engine" | "Setup" | "Runtime" | "Hints" | "Year" | "Dev" | "Pub"
+            | "Version" | "Status" => Line::SingleItem(left.to_string(), right.to_string()),
             "Store" => {
                 let mut items: Vec<String> = Vec::new();
                 for item in right.split(' ') {
                     items.push(item.trim().to_string());
                 }
                 Line::MultipleItems(left.to_string(), items)
-            },
+            }
             "Genre" | "Tags" => {
                 let mut items: Vec<String> = Vec::new();
                 for item in right.split(',') {
                     items.push(item.trim().to_string());
                 }
                 Line::MultipleItems(left.to_string(), items)
-            },
+            }
             _ => panic!("Unkown filed {}", left),
         }
     }
