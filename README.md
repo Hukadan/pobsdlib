@@ -5,7 +5,7 @@ Library in Rust to read the PlayOnBSD database
 (https://github.com/playonbsd/OpenBSD-Games-Database.)
 
 
-### How to use it
+### How to use the binary
 You first need to compile the library and the binary.
 ```
 $ cargo build --release
