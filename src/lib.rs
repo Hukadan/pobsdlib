@@ -5,7 +5,8 @@
 #[macro_use]
 extern crate serde_derive;
 extern crate serde_json;
-mod models;
+/// Models to represent a line of the database, an item (e.g. Engine) or a game.
+pub mod models;
 mod utils;
 // public api
 mod collections;
