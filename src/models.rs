@@ -91,11 +91,58 @@ impl Line {
             _ => panic!("Unkown filed {}", left),
         }
     }
+    /// Returns the string corresponding to the line in the database
+    /// ```
+    /// use pobsdlib::models::Line;
+    /// let input = "Engine\tSuper engine";
+    /// let line = Line::from(&input);
+    /// assert_eq!(line.as_line(), input.to_string());
+    /// let input = "Genre\tGe1, Ge2";
+    /// let line = Line::from(&input);
+    /// assert_eq!(line.as_line(), input.to_string());
+    /// ```
+    pub fn as_line(&self) -> String {
+        match self {
+            Line::NewGame(name) => vec!["Game", name].join("\t"),
+            Line::SingleItem(left, right) => vec![left.to_owned(), right.to_string()].join("\t"),
+            Line::MultipleItems(left, right) => {
+                if left.eq(&"Store".to_string()) {
+                    vec![left.to_owned(), right.join(" ").to_string()].join("\t")
+                } else {
+                    vec![left.to_owned(), right.join(", ").to_string()].join("\t")
+                }
+            }
+        }
+    }
 }
 
 #[cfg(test)]
 mod line_tests {
     use super::*;
+    #[test]
+    fn as_line_game() {
+        let input = "Game\tToto";
+        let line = Line::from(&input);
+        assert_eq!(line.as_line(), input.to_string());
+    }
+    #[test]
+    fn as_line_engine() {
+        let input = "Engine\tToto";
+        let line = Line::from(&input);
+        assert_eq!(line.as_line(), input.to_string());
+    }
+    #[test]
+    fn as_line_tags() {
+        let input = "Tags\ttag1, tag2";
+        let line = Line::from(&input);
+        assert_eq!(line.as_line(), input.to_string());
+    }
+    #[test]
+    fn as_line_stores() {
+        let input = "Tags\turl1 url2";
+        let line = Line::from(&input);
+        assert_eq!(line.as_line(), input.to_string());
+    }
     #[test]
     fn game_line() {
         let input = "Game\tToto";
