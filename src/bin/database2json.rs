@@ -1,7 +1,7 @@
 extern crate pobsdlib;
 extern crate serde_json;
 use pobsdlib::DataBase;
-use std::{env,process,path};
+use std::{env, path, process};
 
 fn main() {
     let args: Vec<String> = env::args().collect();

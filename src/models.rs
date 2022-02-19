@@ -33,7 +33,7 @@ pub trait GameTraits {
 /// ```
 ///
 /// ## Line::SingleItem
-/// A line corresponding to a single item field (e.g. Engine) will produce 
+/// A line corresponding to a single item field (e.g. Engine) will produce
 /// a Line::SingleItem storing the kind of item and its name.
 /// ```
 /// use pobsdlib::models::Line;
@@ -45,7 +45,7 @@ pub trait GameTraits {
 /// ```
 ///
 /// ## Line::MultipleItems
-/// A line corresponding to a multiples items field (e.g. Tags) will produce 
+/// A line corresponding to a multiples items field (e.g. Tags) will produce
 /// a Line::MultipleItems storing the kind of item and the items.
 /// ```
 /// use pobsdlib::models::Line;
@@ -134,7 +134,7 @@ pub struct Item {
     /// The id of the tag.
     pub id: usize,
     /// The name of the tag.
-    pub name: String, 
+    pub name: String,
     /// A vector of ids of the games with such a tag.
     pub games: Vec<usize>,
 }
