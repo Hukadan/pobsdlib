@@ -242,6 +242,16 @@ impl ItemTraits for Game {
 
 impl GameTraits for Game {
     /// Sets one attribute of the game according to the Line enum given.
+    /// ```
+    /// use pobsdlib::models::{Line,Game,GameTraits};
+    ///
+    /// let line_str = "Game\tName of the game";
+    /// let line = Line::from(line_str);
+    /// let mut game = Game::new();
+    /// game.update(line);
+    /// assert_eq!(game.name,"Name of the game".to_string());
+    /// ```
+    /// The id cannot be set this way and the `set_id` method must be used.
     fn update(&mut self, line: Line) {
         match line {
             Line::NewGame(name) => self.name = name,
