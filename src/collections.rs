@@ -4,7 +4,7 @@ use crate::models::{GameTraits, ItemTraits, Game, Item};
 /// This collection can store items or games.
 /// When used with items, ItemTraits are also needed.
 /// When used with games, both ItemTraits and GameTraits are needed.
-#[derive(Serialize, Default)]
+#[derive(Serialize, Default, Debug)]
 pub struct ItemCollection<T> {
     pub count: usize,
     pub items: Vec<T>,
@@ -17,15 +17,12 @@ impl<T: ItemTraits> ItemCollection<T> {
             items,
         }
     }
-    /// Add an item and returns the item id
+    /// Adds an item and returns the item id.
     pub fn add_item(&mut self, mut item: T) -> usize {
         self.count += 1;
         item.set_id(self.count);
         self.items.push(item);
         self.count
-    }
-    pub fn display(&self) {
-        println!("to be implemented");
     }
     pub fn get_count(&self) -> usize {
         self.count
