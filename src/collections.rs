@@ -24,12 +24,14 @@ impl<T: ItemTraits> ItemCollection<T> {
         self.items.push(item);
         self.count
     }
+    /// Returns a refrence the item corresponding to the id if it exists, None otherwise.
     pub fn get_item_by_id(&self, id: usize) -> Option<&T> {
         match self.items.get(id - 1) {
             Some(item) => Some(item),
             None => None,
         }
     }
+    /// Returns a reference the item corresponding to the name if it exists, None otherwise.
     pub fn get_item_by_name(&self, name: &str) -> Option<&T> {
         // assumre there is only one element with a given name
         match self.items.iter().find(|&item| item.get_name() == name) {
@@ -104,6 +106,7 @@ mod collection_items_test {
 }
 
 impl<T: GameTraits> ItemCollection<T> {
+    /// Returns a vector of references to items corresponding to the tag.
     pub fn get_item_with_tag(&self, tag_name: &str) -> Vec<&T> {
         let gs = self
             .items
@@ -115,6 +118,7 @@ impl<T: GameTraits> ItemCollection<T> {
         }
         games
     }
+    /// Returns a vector of references to items corresponding to the genre.
     pub fn get_item_with_genre(&self, genre_name: &str) -> Vec<&T> {
         let gs = self
             .items
