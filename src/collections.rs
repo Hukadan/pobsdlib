@@ -48,14 +48,14 @@ mod collection_items_test {
     fn collection_new_empty() {
         let items: Vec<Item> = Vec::new();
         let collection = ItemCollection::new(items);
-        assert!(collection.count == 0);
+        assert_eq!(collection.count, 0);
     }
     #[test]
     fn collection_new_with_one() {
         let item = Item::new();
         let items = vec![item];
         let collection = ItemCollection::new(items);
-        assert_eq!(collection.get_count(), 1);
+        assert_eq!(collection.count, 1);
     }
     #[test]
     fn collection_add_item_count() {
@@ -241,14 +241,14 @@ impl DataBase {
     }
     /// Return the number of games in the database
     pub fn get_games_count(&self) -> usize {
-        self.games.get_count()
+        self.games.count
     }
     /// Return the number of tags in the database
     pub fn get_tags_count(&self) -> usize {
-        self.tags.get_count()
+        self.tags.count
     }
     /// Return the number of genres in the database
     pub fn get_genres_count(&self) -> usize {
-        self.genres.get_count()
+        self.genres.count
     }
 }
