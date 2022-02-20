@@ -1,5 +1,5 @@
 extern crate pobsdlib;
-use pobsdlib::DataBase;
+use pobsdlib::collections::DataBase;
 
 #[test]
 fn test_game_get_by_id() {

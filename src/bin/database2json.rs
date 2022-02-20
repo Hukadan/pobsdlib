@@ -1,6 +1,6 @@
 extern crate pobsdlib;
 extern crate serde_json;
-use pobsdlib::DataBase;
+use pobsdlib::collections::DataBase;
 use std::{env, path, process};
 
 fn main() {
