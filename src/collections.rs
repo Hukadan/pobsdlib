@@ -1,6 +1,9 @@
 use crate::utils::load_database;
 use crate::models::{GameTraits, ItemTraits, Game, Item};
 
+/// This collection can store items or games.
+/// When used with items, ItemTraits are also needed.
+/// When used with games, both ItemTraits and GameTraits are needed.
 #[derive(Serialize, Default)]
 pub struct ItemCollection<T> {
     pub count: usize,
@@ -14,9 +17,12 @@ impl<T: ItemTraits> ItemCollection<T> {
             items,
         }
     }
-    pub fn add_item(&mut self, item: T) {
+    /// Add an item and returns the item id
+    pub fn add_item(&mut self, mut item: T) -> usize {
         self.count += 1;
+        item.set_id(self.count);
         self.items.push(item);
+        self.count
     }
     pub fn display(&self) {
         println!("to be implemented");
@@ -56,12 +62,20 @@ mod collection_items_test {
         assert_eq!(collection.get_count(), 1);
     }
     #[test]
-    fn collection_add_item() {
+    fn collection_add_item_count() {
         let items: Vec<Item> = Vec::new();
         let mut collection = ItemCollection::new(items);
         let item = Item::new();
         collection.add_item(item);
-        assert!(collection.count == 1);
+        assert_eq!(collection.count, 1);
+    }
+    #[test]
+    fn collection_add_item() {
+        let items: Vec<Item> = Vec::new();
+        let mut collection = ItemCollection::new(items);
+        let item = Item::new();
+        let id = collection.add_item(item);
+        assert_eq!(id, collection.items[0].id);
     }
     #[test]
     fn collection_get_by_name() {
