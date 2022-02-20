@@ -39,6 +39,14 @@ impl<T: ItemTraits> ItemCollection<T> {
             None => None,
         }
     }
+    /// Returns a mutable reference the item corresponding to the name if it exists, None otherwise.
+    pub fn get_item_by_name_mut(&mut self, name: &str) -> Option<&mut T> {
+        // assumre there is only one element with a given name
+        match self.items.iter_mut().find(|item| item.get_name() == name) {
+            Some(item) => Some(item),
+            None => None,
+        }
+    }
 }
 #[cfg(test)]
 mod collection_items_test {
@@ -242,6 +250,38 @@ impl DataBase {
     /// Return the number of games in the database
     pub fn get_games_count(&self) -> usize {
         self.games.count
+    } 
+    /// Returns a reference the item corresponding to the name if it exists, None otherwise.
+    pub fn get_game_by_name(&self, name: &str) -> Option<&Game> {
+        self.games.get_item_by_name(name)
+    }
+    /// Returns a refrence the item corresponding to the id if it exists, None otherwise.
+    pub fn get_game_by_id(&self, id: usize) -> Option<&Game> {
+        self.games.get_item_by_id(id)
+    }
+    /// Returns a vector of references to games corresponding to the tag.
+    pub fn get_games_by_tag(&self, name: &str) -> Vec<&Game> {
+        let mut games: Vec<&Game> = Vec::new();
+        if let Some(tag) = self.tags.get_item_by_name(name){
+            for &id in &tag.games {
+                if let Some(game) = self.games.get_item_by_id(id) {
+                    games.push(&game);
+                }
+            }
+        }
+        games
+    }
+    /// Returns a vector of references to games corresponding to the genre.
+    pub fn get_games_by_genre(&self, name: &str) -> Vec<&Game> {
+        let mut games: Vec<&Game> = Vec::new();
+        if let Some(genre) = self.genres.get_item_by_name(name){
+            for &id in &genre.games {
+                if let Some(game) = self.games.get_item_by_id(id) {
+                    games.push(&game);
+                }
+            }
+        }
+        games
     }
     /// Return the number of tags in the database
     pub fn get_tags_count(&self) -> usize {
