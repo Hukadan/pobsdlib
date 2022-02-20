@@ -24,9 +24,6 @@ impl<T: ItemTraits> ItemCollection<T> {
         self.items.push(item);
         self.count
     }
-    pub fn get_count(&self) -> usize {
-        self.count
-    }
     pub fn get_item_by_id(&self, id: usize) -> Option<&T> {
         match self.items.get(id - 1) {
             Some(item) => Some(item),
