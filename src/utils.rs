@@ -1,5 +1,5 @@
 use crate::collections::ItemCollection;
-use crate::models::{Game, GameTraits, ItemTraits, Line};
+use crate::models::{Game, Item, GameTraits, ItemTraits, Line};
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
@@ -89,5 +89,105 @@ pub fn load_database(filename: &str, games: &mut ItemCollection<Game>) {
         for line in lines.flatten() {
             game_dispatch(Line::from(&line), games);
         }
+    }
+}
+
+pub fn load_tags_from_games(tags: &mut ItemCollection<Item>, games: &ItemCollection<Game>) {
+    for game in &games.items {
+        if game.tags.len()> 0 {
+            for tag in &game.tags {
+                match tags.get_item_by_name_mut(&tag) {
+                    Some(tag_item) => tag_item.games.push(game.id),
+                    None => {
+                        println!("tag {} added", &tag);
+                        let mut newtag = Item::new();
+                        newtag.name = tag.to_string();
+                        newtag.games.push(game.id);
+                        tags.items.push(newtag);
+                    }
+                }
+            }
+        }
+    }
+}
+#[cfg(test)]
+mod tests_load_tags {
+    use super::*;
+    #[test]
+    fn test_load_tags() {
+        let tags: Vec<Item> = Vec::new(); 
+        let games: Vec<Game> = Vec::new(); 
+        let mut tagcollection = ItemCollection::new(tags);
+        let mut gamecollection = ItemCollection::new(games);
+        let mut game = Game::new();
+        game.tags = vec!["tag1".to_string(), "tag2".to_string()];
+        gamecollection.add_item(game);
+        let mut game = Game::new();
+        game.tags = vec!["tag1".to_string(), "tag3".to_string()];
+        gamecollection.add_item(game);
+        let mut game = Game::new();
+        game.tags = vec!["tag1".to_string()];
+        gamecollection.add_item(game);
+        load_tags_from_games(&mut tagcollection, &gamecollection);
+        // Check if the number of tags is correct
+        assert_eq!(tagcollection.items.len(),3);
+        // Check if the tag names are correct
+        assert_eq!(tagcollection.items[0].name,"tag1".to_string());
+        assert_eq!(tagcollection.items[1].name,"tag2".to_string());
+        assert_eq!(tagcollection.items[2].name,"tag3".to_string());
+        // Check if the game ids associated to the tags are correct
+        assert_eq!(tagcollection.items[0].games, vec![1, 2, 3]);
+        assert_eq!(tagcollection.items[1].games, vec![1]);
+        assert_eq!(tagcollection.items[2].games, vec![2]);
+    }
+}
+
+pub fn load_genres_from_games(genres: &mut ItemCollection<Item>, games: &ItemCollection<Game>) {
+    for game in &games.items {
+        if game.genres.len()> 0 {
+            for genre in &game.genres {
+                match genres.get_item_by_name_mut(&genre) {
+                    Some(genre_item) => genre_item.games.push(game.id),
+                    None => {
+                        println!("genre {} added", &genre);
+                        let mut newgenre = Item::new();
+                        newgenre.name = genre.to_string();
+                        newgenre.games.push(game.id);
+                        genres.items.push(newgenre);
+                    }
+                }
+            }
+        }
+    }
+}
+#[cfg(test)]
+mod tests_load_genres {
+    use super::*;
+    #[test]
+    fn test_load_genres() {
+        let genres: Vec<Item> = Vec::new(); 
+        let games: Vec<Game> = Vec::new(); 
+        let mut genrecollection = ItemCollection::new(genres);
+        let mut gamecollection = ItemCollection::new(games);
+        let mut game = Game::new();
+        game.genres = vec!["gen1".to_string(), "gen2".to_string()];
+        gamecollection.add_item(game);
+        let mut game = Game::new();
+        game.genres = vec!["gen1".to_string(), "gen3".to_string()];
+        gamecollection.add_item(game);
+        let mut game = Game::new();
+        game.genres = vec!["gen1".to_string()];
+        gamecollection.add_item(game);
+        load_genres_from_games(&mut genrecollection, &gamecollection);
+        // Check if the number of tags is correct
+        assert_eq!(genrecollection.items.len(),3);
+        // Check if the tag names are correct
+        assert_eq!(genrecollection.items[0].name,"gen1".to_string());
+        assert_eq!(genrecollection.items[1].name,"gen2".to_string());
+        assert_eq!(genrecollection.items[2].name,"gen3".to_string());
+        // Check if the game ids associated to the tags are correct
+        assert_eq!(genrecollection.items[0].games, vec![1, 2, 3]);
+        assert_eq!(genrecollection.items[1].games, vec![1]);
+        assert_eq!(genrecollection.items[2].games, vec![2]);
     }
 }

@@ -1,4 +1,4 @@
-use crate::utils::load_database;
+use crate::utils::{load_database, load_tags_from_games, load_genres_from_games};
 use crate::models::{GameTraits, ItemTraits, Game, Item};
 
 /// This collection can store items or games.
@@ -238,9 +238,11 @@ impl DataBase {
     /// Create a database from a file
     pub fn new(filename: &str) -> Self {
         let mut games: ItemCollection<Game> = ItemCollection::default();
-        let tags: ItemCollection<Item> = ItemCollection::default();
-        let genres: ItemCollection<Item> = ItemCollection::default();
+        let mut tags: ItemCollection<Item> = ItemCollection::default();
+        let mut genres: ItemCollection<Item> = ItemCollection::default();
         load_database(filename, &mut games);
+        load_tags_from_games(&mut tags,&games);
+        load_genres_from_games(&mut genres,&games);
         Self {
             games,
             tags,
