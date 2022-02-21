@@ -99,7 +99,6 @@ pub fn load_tags_from_games(tags: &mut ItemCollection<Item>, games: &ItemCollect
                 match tags.get_item_by_name_mut(&tag) {
                     Some(tag_item) => tag_item.games.push(game.id),
                     None => {
-                        println!("tag {} added", &tag);
                         let mut newtag = Item::new();
                         newtag.name = tag.to_string();
                         newtag.games.push(game.id);
@@ -149,7 +148,6 @@ pub fn load_genres_from_games(genres: &mut ItemCollection<Item>, games: &ItemCol
                 match genres.get_item_by_name_mut(&genre) {
                     Some(genre_item) => genre_item.games.push(game.id),
                     None => {
-                        println!("genre {} added", &genre);
                         let mut newgenre = Item::new();
                         newgenre.name = genre.to_string();
                         newgenre.games.push(game.id);
