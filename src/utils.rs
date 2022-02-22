@@ -94,9 +94,9 @@ pub fn load_database(filename: &str, games: &mut ItemCollection<Game>) {
 
 pub fn load_tags_from_games(tags: &mut ItemCollection<Item>, games: &ItemCollection<Game>) {
     for game in &games.items {
-        if game.tags.len() > 0 {
+        if !game.tags.is_empty() {
             for tag in &game.tags {
-                match tags.get_item_by_name_mut(&tag) {
+                match tags.get_item_by_name_mut(tag) {
                     Some(tag_item) => tag_item.games.push(game.id),
                     None => {
                         let mut newtag = Item::new();
@@ -143,9 +143,9 @@ mod tests_load_tags {
 
 pub fn load_genres_from_games(genres: &mut ItemCollection<Item>, games: &ItemCollection<Game>) {
     for game in &games.items {
-        if game.genres.len() > 0 {
+        if !game.genres.is_empty() {
             for genre in &game.genres {
-                match genres.get_item_by_name_mut(&genre) {
+                match genres.get_item_by_name_mut(genre) {
                     Some(genre_item) => genre_item.games.push(game.id),
                     None => {
                         let mut newgenre = Item::new();

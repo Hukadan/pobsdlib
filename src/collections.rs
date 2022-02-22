@@ -267,7 +267,7 @@ impl DataBase {
         if let Some(tag) = self.tags.get_item_by_name(name) {
             for &id in &tag.games {
                 if let Some(game) = self.games.get_item_by_id(id) {
-                    games.push(&game);
+                    games.push(game);
                 }
             }
         }
@@ -279,7 +279,7 @@ impl DataBase {
         if let Some(genre) = self.genres.get_item_by_name(name) {
             for &id in &genre.games {
                 if let Some(game) = self.games.get_item_by_id(id) {
-                    games.push(&game);
+                    games.push(game);
                 }
             }
         }
