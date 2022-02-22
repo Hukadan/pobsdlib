@@ -8,104 +8,104 @@ pub trait ItemTraits {
 
 /// This trait is needed if you use ItemCollection with Game struct.
 pub trait GameTraits {
-    fn update(&mut self, line: Line);
+    fn update(&mut self, field: Field);
     fn get_tags(&self) -> &Vec<String>;
     fn get_genres(&self) -> &Vec<String>;
 }
 
-/// # Represent a line of the game database
+/// # Represent a field generated form a line of the game database
 /// There is three different variants:
 /// * a first variant for Game entries;
 /// * a second variant for entries related to single items (i.e. Engine);
 /// * a third variant for entries related to multiple items (i.e Tags).
 ///
 ///
-/// ## Line::NewGame
-/// A line corresponding to a Game field will produce a Line::NewGame
+/// ## Field::NewGame
+/// A line corresponding to a Game field will produce a Field::NewGame
 /// storing the name of the game.
 /// ```
-/// use pobsdlib::models::Line;
+/// use pobsdlib::models::Field;
 ///
 /// let line_str = "Game\tName of the game";
-/// let line = Line::from(line_str);
+/// let field = Field::from(line_str);
 ///
-/// assert_eq!(line,Line::NewGame("Name of the game".to_string()));
+/// assert_eq!(field,Field::NewGame("Name of the game".to_string()));
 /// ```
 ///
-/// ## Line::SingleItem
+/// ## Field::SingleItem
 /// A line corresponding to a single item field (e.g. Engine) will produce
-/// a Line::SingleItem storing the kind of item and its name.
+/// a Field::SingleItem storing the kind of item and its name.
 /// ```
-/// use pobsdlib::models::Line;
+/// use pobsdlib::models::Field;
 ///
 /// let line_str = "Engine\tEngine name";
-/// let line = Line::from(line_str);
+/// let field = Field::from(line_str);
 ///
-/// assert_eq!(line,Line::SingleItem("Engine".to_string(),"Engine name".to_string()));
+/// assert_eq!(field,Field::SingleItem("Engine".to_string(),"Engine name".to_string()));
 /// ```
 ///
-/// ## Line::MultipleItems
+/// ## Field::MultipleItems
 /// A line corresponding to a multiples items field (e.g. Tags) will produce
-/// a Line::MultipleItems storing the kind of item and the items.
+/// a Field::MultipleItems storing the kind of item and the items.
 /// ```
-/// use pobsdlib::models::Line;
+/// use pobsdlib::models::Field;
 ///
 /// let line_str = "Tags\ttag1,tag2";
-/// let line = Line::from(line_str);
+/// let field = Field::from(line_str);
 ///
-/// assert_eq!(line,Line::MultipleItems("Tags".to_string(),vec!["tag1".to_string(),"tag2".to_string()]));
+/// assert_eq!(field,Field::MultipleItems("Tags".to_string(),vec!["tag1".to_string(),"tag2".to_string()]));
 /// ```
 /// Note that while Tags and Genres are coma separated values, Stores are space separated ones.
-/// This is handled by the `Line::from` method.
+/// This is handled by the `Field::from` method.
 #[derive(PartialEq, Debug)]
-pub enum Line {
+pub enum Field {
     NewGame(String),
     SingleItem(String, String),
     MultipleItems(String, Vec<String>),
 }
 
-impl Line {
-    /// Try to convert a line of the database in a Line enum. Panic if it cannot.
+impl Field {
+    /// Try to convert a line of the database in a Field enum. Panic if it cannot.
     pub fn from(line: &str) -> Self {
         // split the line in a left and right hand sides
         let (left, right) = split_line(line);
         // use the left hand side to discriminate between single and multiple item lines
         match left {
-            "Game" => Line::NewGame(right.to_string()),
+            "Game" => Field::NewGame(right.to_string()),
             "Cover" | "Engine" | "Setup" | "Runtime" | "Hints" | "Year" | "Dev" | "Pub"
-            | "Version" | "Status" => Line::SingleItem(left.to_string(), right.to_string()),
+            | "Version" | "Status" => Field::SingleItem(left.to_string(), right.to_string()),
             "Store" => {
                 let mut items: Vec<String> = Vec::new();
                 for item in right.split(' ') {
                     items.push(item.trim().to_string());
                 }
-                Line::MultipleItems(left.to_string(), items)
+                Field::MultipleItems(left.to_string(), items)
             }
             "Genre" | "Tags" => {
                 let mut items: Vec<String> = Vec::new();
                 for item in right.split(',') {
                     items.push(item.trim().to_string());
                 }
-                Line::MultipleItems(left.to_string(), items)
+                Field::MultipleItems(left.to_string(), items)
             }
             _ => panic!("Unkown filed {}", left),
         }
     }
     /// Returns the string corresponding to the line in the database
     /// ```
-    /// use pobsdlib::models::Line;
+    /// use pobsdlib::models::Field;
     /// let input = "Engine\tSuper engine";
-    /// let line = Line::from(&input);
-    /// assert_eq!(line.as_line(), input.to_string());
+    /// let field = Field::from(&input);
+    /// assert_eq!(field.as_line(), input.to_string());
     /// let input = "Genre\tGe1, Ge2";
-    /// let line = Line::from(&input);
-    /// assert_eq!(line.as_line(), input.to_string());
+    /// let field = Field::from(&input);
+    /// assert_eq!(field.as_line(), input.to_string());
     /// ```
     pub fn as_line(&self) -> String {
         match self {
-            Line::NewGame(name) => vec!["Game", name].join("\t"),
-            Line::SingleItem(left, right) => vec![left.to_owned(), right.to_string()].join("\t"),
-            Line::MultipleItems(left, right) => {
+            Field::NewGame(name) => vec!["Game", name].join("\t"),
+            Field::SingleItem(left, right) => vec![left.to_owned(), right.to_string()].join("\t"),
+            Field::MultipleItems(left, right) => {
                 if left.eq(&"Store".to_string()) {
                     vec![left.to_owned(), right.join(" ").to_string()].join("\t")
                 } else {
@@ -117,60 +117,60 @@ impl Line {
 }
 
 #[cfg(test)]
-mod line_tests {
+mod field_tests {
     use super::*;
     #[test]
     fn as_line_game() {
         let input = "Game\tToto";
-        let line = Line::from(&input);
-        assert_eq!(line.as_line(), input.to_string());
+        let field = Field::from(&input);
+        assert_eq!(field.as_line(), input.to_string());
     }
     #[test]
     fn as_line_engine() {
         let input = "Engine\tToto";
-        let line = Line::from(&input);
-        assert_eq!(line.as_line(), input.to_string());
+        let field = Field::from(&input);
+        assert_eq!(field.as_line(), input.to_string());
     }
     #[test]
     fn as_line_tags() {
         let input = "Tags\ttag1, tag2";
-        let line = Line::from(&input);
-        assert_eq!(line.as_line(), input.to_string());
+        let field = Field::from(&input);
+        assert_eq!(field.as_line(), input.to_string());
     }
     #[test]
     fn as_line_stores() {
         let input = "Tags\turl1 url2";
-        let line = Line::from(&input);
-        assert_eq!(line.as_line(), input.to_string());
+        let field = Field::from(&input);
+        assert_eq!(field.as_line(), input.to_string());
     }
     #[test]
     fn game_line() {
         let input = "Game\tToto";
-        let line = Line::from(&input);
-        assert!(Line::NewGame("Toto".to_string()) == line);
+        let field = Field::from(&input);
+        assert!(Field::NewGame("Toto".to_string()) == field);
     }
     #[test]
     fn single_line() {
         let input = "Cover\tToto";
-        let line = Line::from(&input);
-        assert!(Line::SingleItem("Cover".to_string(), "Toto".to_string()) == line);
+        let field = Field::from(&input);
+        assert!(Field::SingleItem("Cover".to_string(), "Toto".to_string()) == field);
     }
     #[test]
     fn mutilple_line() {
         let input = "Genre\tfirst, second";
-        let line = Line::from(&input);
+        let field = Field::from(&input);
         assert!(
-            Line::MultipleItems(
+            Field::MultipleItems(
                 "Genre".to_string(),
                 vec!["first".to_string(), "second".to_string()]
-            ) == line
+            ) == field
         );
     }
     #[test]
     #[should_panic]
     fn panic_line() {
         let input = "Let's panic";
-        Line::from(&input);
+        Field::from(&input);
     }
 }
 
@@ -288,21 +288,21 @@ impl ItemTraits for Game {
 }
 
 impl GameTraits for Game {
-    /// Sets one attribute of the game according to the Line enum given.
+    /// Sets one attribute of the game according to the Field enum given.
     /// ```
-    /// use pobsdlib::models::{Line,Game,GameTraits};
+    /// use pobsdlib::models::{Field,Game,GameTraits};
     ///
     /// let line_str = "Game\tName of the game";
-    /// let line = Line::from(line_str);
+    /// let field = Field::from(line_str);
     /// let mut game = Game::new();
-    /// game.update(line);
+    /// game.update(field);
     /// assert_eq!(game.name,"Name of the game".to_string());
     /// ```
     /// The id cannot be set this way and the `set_id` method must be used.
-    fn update(&mut self, line: Line) {
-        match line {
-            Line::NewGame(name) => self.name = name,
-            Line::SingleItem(left, right) => {
+    fn update(&mut self, field: Field) {
+        match field {
+            Field::NewGame(name) => self.name = name,
+            Field::SingleItem(left, right) => {
                 match left.as_str() {
                     "Cover" => self.cover = right,
                     "Engine" => self.engine = right,
@@ -317,7 +317,7 @@ impl GameTraits for Game {
                     _ => panic!("unknown single item field: unable to set"),
                 };
             }
-            Line::MultipleItems(left, right) => {
+            Field::MultipleItems(left, right) => {
                 match left.as_str() {
                     "Store" => self.store = right,
                     "Tags" => self.tags = right,
@@ -362,126 +362,126 @@ mod game_tests {
     #[test]
     fn game_update_name() {
         let mut game = Game::new();
-        let line = Line::NewGame("Test".to_string());
-        game.update(line);
+        let field = Field::NewGame("Test".to_string());
+        game.update(field);
         assert_eq!(game.name, "Test".to_string());
     }
     #[test]
     fn game_update_cover() {
         let mut game = Game::new();
-        let line = Line::SingleItem("Cover".to_string(), "Test".to_string());
-        game.update(line);
+        let field = Field::SingleItem("Cover".to_string(), "Test".to_string());
+        game.update(field);
         assert_eq!(game.cover, "Test".to_string());
     }
     #[test]
     fn game_update_engine() {
         let mut game = Game::new();
-        let line = Line::SingleItem("Engine".to_string(), "Test".to_string());
-        game.update(line);
+        let field = Field::SingleItem("Engine".to_string(), "Test".to_string());
+        game.update(field);
         assert_eq!(game.engine, "Test".to_string());
     }
     #[test]
     fn game_update_setup() {
         let mut game = Game::new();
-        let line = Line::SingleItem("Setup".to_string(), "Test".to_string());
-        game.update(line);
+        let field = Field::SingleItem("Setup".to_string(), "Test".to_string());
+        game.update(field);
         assert_eq!(game.setup, "Test".to_string());
     }
     #[test]
     fn game_update_runtime() {
         let mut game = Game::new();
-        let line = Line::SingleItem("Runtime".to_string(), "Test".to_string());
-        game.update(line);
+        let field = Field::SingleItem("Runtime".to_string(), "Test".to_string());
+        game.update(field);
         assert_eq!(game.runtime, "Test".to_string());
     }
     #[test]
     fn game_update_hints() {
         let mut game = Game::new();
-        let line = Line::SingleItem("Hints".to_string(), "Test".to_string());
-        game.update(line);
+        let field = Field::SingleItem("Hints".to_string(), "Test".to_string());
+        game.update(field);
         assert_eq!(game.hints, "Test".to_string());
     }
     #[test]
     fn game_update_year() {
         let mut game = Game::new();
-        let line = Line::SingleItem("Year".to_string(), "Test".to_string());
-        game.update(line);
+        let field = Field::SingleItem("Year".to_string(), "Test".to_string());
+        game.update(field);
         assert_eq!(game.year, "Test".to_string());
     }
     #[test]
     fn game_update_dev() {
         let mut game = Game::new();
-        let line = Line::SingleItem("Dev".to_string(), "Test".to_string());
-        game.update(line);
+        let field = Field::SingleItem("Dev".to_string(), "Test".to_string());
+        game.update(field);
         assert_eq!(game.dev, "Test".to_string());
     }
     #[test]
     fn game_update_publi() {
         let mut game = Game::new();
-        let line = Line::SingleItem("Pub".to_string(), "Test".to_string());
-        game.update(line);
+        let field = Field::SingleItem("Pub".to_string(), "Test".to_string());
+        game.update(field);
         assert_eq!(game.publi, "Test".to_string());
     }
     #[test]
     fn game_update_version() {
         let mut game = Game::new();
-        let line = Line::SingleItem("Version".to_string(), "Test".to_string());
-        game.update(line);
+        let field = Field::SingleItem("Version".to_string(), "Test".to_string());
+        game.update(field);
         assert_eq!(game.version, "Test".to_string());
     }
     #[test]
     fn game_update_status() {
         let mut game = Game::new();
-        let line = Line::SingleItem("Status".to_string(), "Test".to_string());
-        game.update(line);
+        let field = Field::SingleItem("Status".to_string(), "Test".to_string());
+        game.update(field);
         assert_eq!(game.status, "Test".to_string());
     }
     #[test]
     #[should_panic]
     fn game_single_panic() {
         let mut game = Game::new();
-        let line = Line::SingleItem("Panic".to_string(), "Test".to_string());
-        game.update(line);
+        let field = Field::SingleItem("Panic".to_string(), "Test".to_string());
+        game.update(field);
     }
     #[test]
     fn game_update_store() {
         let mut game = Game::new();
-        let line = Line::MultipleItems(
+        let field = Field::MultipleItems(
             "Store".to_string(),
             vec!["ST1".to_string(), "ST2".to_string()],
         );
-        game.update(line);
+        game.update(field);
         assert_eq!(game.store, vec!["ST1".to_string(), "ST2".to_string()]);
     }
     #[test]
     fn game_update_tags() {
         let mut game = Game::new();
-        let line = Line::MultipleItems(
+        let field = Field::MultipleItems(
             "Tags".to_string(),
             vec!["Tag1".to_string(), "Tag2".to_string()],
         );
-        game.update(line);
+        game.update(field);
         assert_eq!(game.tags, vec!["Tag1".to_string(), "Tag2".to_string()]);
     }
     #[test]
     fn game_update_genres() {
         let mut game = Game::new();
-        let line = Line::MultipleItems(
+        let field = Field::MultipleItems(
             "Genre".to_string(),
             vec!["Ge1".to_string(), "Ge2".to_string()],
         );
-        game.update(line);
+        game.update(field);
         assert_eq!(game.genres, vec!["Ge1".to_string(), "Ge2".to_string()]);
     }
     #[test]
     #[should_panic]
     fn game_multiple_panic() {
         let mut game = Game::new();
-        let line = Line::MultipleItems(
+        let field = Field::MultipleItems(
             "Panic".to_string(),
             vec!["Ge1".to_string(), "Ge2".to_string()],
         );
-        game.update(line);
+        game.update(field);
     }
     #[test]
     fn get_tags() {

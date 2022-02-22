@@ -1,5 +1,5 @@
 use crate::collections::ItemCollection;
-use crate::models::{Game, Item, GameTraits, ItemTraits, Line};
+use crate::models::{Game, Item, GameTraits, ItemTraits, Field};
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
@@ -60,17 +60,17 @@ mod tests {
     }
 }
 
-pub fn game_dispatch(line: Line, games: &mut ItemCollection<Game>) {
-    match line {
-        Line::NewGame(_) => {
+pub fn game_dispatch(field: Field, games: &mut ItemCollection<Game>) {
+    match field {
+        Field::NewGame(_) => {
             let mut game = Game::default();
             game.set_id(games.count + 1);
-            game.update(line);
+            game.update(field);
             games.add_item(game);
         }
-        Line::SingleItem(_, _) | Line::MultipleItems(_, _) => {
+        Field::SingleItem(_, _) | Field::MultipleItems(_, _) => {
             if let Some(game) = games.items.last_mut() {
-                game.update(line)
+                game.update(field)
             };
         }
     };
@@ -87,7 +87,7 @@ where
 pub fn load_database(filename: &str, games: &mut ItemCollection<Game>) {
     if let Ok(lines) = read_lines(filename) {
         for line in lines.flatten() {
-            game_dispatch(Line::from(&line), games);
+            game_dispatch(Field::from(&line), games);
         }
     }
 }
