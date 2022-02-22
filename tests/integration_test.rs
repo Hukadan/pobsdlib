@@ -33,7 +33,7 @@ fn test_game_get_by_name() {
 fn test_game_get_by_tag() {
     let db_game = DataBase::new("tests/data/test-games.db");
     let games = db_game.get_games_by_tag("indie");
-    assert_eq!(games.len(),2);
+    assert_eq!(games.len(), 2);
     assert_eq!(games[0].name, "The Adventures of Shuggy".to_string());
     assert_eq!(games[1].name, "Aeternum".to_string());
 }
@@ -41,7 +41,7 @@ fn test_game_get_by_tag() {
 fn test_game_get_by_genre() {
     let db_game = DataBase::new("tests/data/test-games.db");
     let games = db_game.get_games_by_genre("RPG");
-    assert_eq!(games.len(),2);
+    assert_eq!(games.len(), 2);
     assert_eq!(games[0].name, "Aedemphia".to_string());
     assert_eq!(games[1].name, "Always Sometimes Monsters".to_string());
 }

@@ -58,13 +58,13 @@ pub trait GameTraits {
 /// Note that while Tags and Genres are coma separated values, Stores are space separated ones.
 /// This is handled by the `Field::from` method.
 #[derive(PartialEq, Debug)]
-pub enum Field <'a> {
+pub enum Field<'a> {
     NewGame(&'a str),
     SingleItem(&'a str, &'a str),
     MultipleItems(&'a str, Vec<&'a str>),
 }
 
-impl <'a> Field <'a> {
+impl<'a> Field<'a> {
     /// Try to convert a line of the database in a Field enum. Panic if it cannot.
     pub fn from(line: &'a str) -> Self {
         // split the line in a left and right hand sides
@@ -159,12 +159,7 @@ mod field_tests {
     fn mutilple_line() {
         let input = "Genre\tfirst, second";
         let field = Field::from(&input);
-        assert!(
-            Field::MultipleItems(
-                &"Genre",
-                vec![&"first", &"second"]
-            ) == field
-        );
+        assert!(Field::MultipleItems(&"Genre", vec![&"first", &"second"]) == field);
     }
     #[test]
     #[should_panic]
@@ -346,7 +341,7 @@ impl GameTraits for Game {
                             stores.push(store.to_string());
                         }
                         self.store = stores;
-                    },
+                    }
                     "Tags" => {
                         let mut tags: Vec<String> = Vec::new();
                         for tag in right {
@@ -485,30 +480,21 @@ mod game_tests {
     #[test]
     fn game_update_store() {
         let mut game = Game::new();
-        let field = Field::MultipleItems(
-            &"Store",
-            vec![&"ST1", &"ST2"],
-        );
+        let field = Field::MultipleItems(&"Store", vec![&"ST1", &"ST2"]);
         game.update(field);
         assert_eq!(game.store, vec!["ST1".to_string(), "ST2".to_string()]);
     }
     #[test]
     fn game_update_tags() {
         let mut game = Game::new();
-        let field = Field::MultipleItems(
-            &"Tags",
-            vec![&"Tag1", &"Tag2"],
-        );
+        let field = Field::MultipleItems(&"Tags", vec![&"Tag1", &"Tag2"]);
         game.update(field);
         assert_eq!(game.tags, vec!["Tag1".to_string(), "Tag2".to_string()]);
     }
     #[test]
     fn game_update_genres() {
         let mut game = Game::new();
-        let field = Field::MultipleItems(
-            &"Genre",
-            vec![&"Ge1", &"Ge2"],
-        );
+        let field = Field::MultipleItems(&"Genre", vec![&"Ge1", &"Ge2"]);
         game.update(field);
         assert_eq!(game.genres, vec!["Ge1".to_string(), "Ge2".to_string()]);
     }
@@ -516,10 +502,7 @@ mod game_tests {
     #[should_panic]
     fn game_multiple_panic() {
         let mut game = Game::new();
-        let field = Field::MultipleItems(
-            &"Panic",
-            vec![&"Ge1", &"Ge2"],
-        );
+        let field = Field::MultipleItems(&"Panic", vec![&"Ge1", &"Ge2"]);
         game.update(field);
     }
     #[test]

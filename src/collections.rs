@@ -1,5 +1,5 @@
-use crate::utils::{load_database, load_tags_from_games, load_genres_from_games};
-use crate::models::{GameTraits, ItemTraits, Game, Item};
+use crate::models::{Game, GameTraits, Item, ItemTraits};
+use crate::utils::{load_database, load_genres_from_games, load_tags_from_games};
 
 /// This collection can store items or games.
 /// When used with items, ItemTraits are also needed.
@@ -241,8 +241,8 @@ impl DataBase {
         let mut tags: ItemCollection<Item> = ItemCollection::default();
         let mut genres: ItemCollection<Item> = ItemCollection::default();
         load_database(filename, &mut games);
-        load_tags_from_games(&mut tags,&games);
-        load_genres_from_games(&mut genres,&games);
+        load_tags_from_games(&mut tags, &games);
+        load_genres_from_games(&mut genres, &games);
         Self {
             games,
             tags,
@@ -252,7 +252,7 @@ impl DataBase {
     /// Return the number of games in the database
     pub fn get_games_count(&self) -> usize {
         self.games.count
-    } 
+    }
     /// Returns a reference the item corresponding to the name if it exists, None otherwise.
     pub fn get_game_by_name(&self, name: &str) -> Option<&Game> {
         self.games.get_item_by_name(name)
@@ -264,7 +264,7 @@ impl DataBase {
     /// Returns a vector of references to games corresponding to the tag.
     pub fn get_games_by_tag(&self, name: &str) -> Vec<&Game> {
         let mut games: Vec<&Game> = Vec::new();
-        if let Some(tag) = self.tags.get_item_by_name(name){
+        if let Some(tag) = self.tags.get_item_by_name(name) {
             for &id in &tag.games {
                 if let Some(game) = self.games.get_item_by_id(id) {
                     games.push(&game);
@@ -276,7 +276,7 @@ impl DataBase {
     /// Returns a vector of references to games corresponding to the genre.
     pub fn get_games_by_genre(&self, name: &str) -> Vec<&Game> {
         let mut games: Vec<&Game> = Vec::new();
-        if let Some(genre) = self.genres.get_item_by_name(name){
+        if let Some(genre) = self.genres.get_item_by_name(name) {
             for &id in &genre.games {
                 if let Some(game) = self.games.get_item_by_id(id) {
                     games.push(&game);

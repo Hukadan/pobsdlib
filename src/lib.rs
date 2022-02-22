@@ -7,6 +7,5 @@ extern crate serde_derive;
 extern crate serde_json;
 mod utils;
 // public api
-pub mod models;
 pub mod collections;
-
+pub mod models;
