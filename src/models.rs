@@ -149,17 +149,6 @@ impl ItemTraits for Item {
     }
 }
 
-impl ItemTraits for &Item {
-    /// Sets the id of the item.
-    fn set_id(&mut self, id: usize) {
-        self.set_id(id);
-    }
-    /// Returns the name of the item.
-    fn get_name(&self) -> &str {
-        &self.name
-    }
-}
-
 /* ------------------------ GAME STRUCT -------------------------*/
 /// # Represent a game
 #[derive(Serialize, Default, PartialEq)]
@@ -243,17 +232,6 @@ impl ItemTraits for Game {
     /// Sets the id of the game.
     fn set_id(&mut self, id: usize) {
         self.id = id;
-    }
-    /// Returns the name of the game.
-    fn get_name(&self) -> &str {
-        &self.name
-    }
-}
-
-impl ItemTraits for &Game {
-    /// Sets the id of the game.
-    fn set_id(&mut self, id: usize) {
-        self.set_id(id);
     }
     /// Returns the name of the game.
     fn get_name(&self) -> &str {
