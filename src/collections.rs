@@ -31,6 +31,13 @@ impl<T: ItemTraits> ItemCollection<T> {
             None => None,
         }
     }
+    /// Returns a mutable refrence the item corresponding to the id if it exists, None otherwise.
+    pub fn get_item_by_id_mut(&mut self, id: usize) -> Option<&mut T> {
+        match self.items.get_mut(id - 1) {
+            Some(item) => Some(item),
+            None => None,
+        }
+    }
     /// Returns a reference the item corresponding to the name if it exists, None otherwise.
     pub fn get_item_by_name(&self, name: &str) -> Option<&T> {
         // assumre there is only one element with a given name
@@ -45,70 +52,6 @@ impl<T: ItemTraits> ItemCollection<T> {
         match self.items.iter_mut().find(|item| item.get_name() == name) {
             Some(item) => Some(item),
             None => None,
-        }
-    }
-}
-#[cfg(test)]
-mod collection_items_test {
-    use super::*;
-    use models::Item;
-    #[test]
-    fn collection_new_empty() {
-        let items: Vec<Item> = Vec::new();
-        let collection = ItemCollection::new(items);
-        assert_eq!(collection.count, 0);
-    }
-    #[test]
-    fn collection_new_with_one() {
-        let item = Item::new();
-        let items = vec![item];
-        let collection = ItemCollection::new(items);
-        assert_eq!(collection.count, 1);
-    }
-    #[test]
-    fn collection_add_item_count() {
-        let items: Vec<Item> = Vec::new();
-        let mut collection = ItemCollection::new(items);
-        let item = Item::new();
-        collection.add_item(item);
-        assert_eq!(collection.count, 1);
-    }
-    #[test]
-    fn collection_add_item() {
-        let items: Vec<Item> = Vec::new();
-        let mut collection = ItemCollection::new(items);
-        let item = Item::new();
-        let id = collection.add_item(item);
-        assert_eq!(id, collection.items[0].id);
-    }
-    #[test]
-    fn collection_get_by_name() {
-        let mut item1 = Item::new();
-        item1.name = "item 1".to_string();
-        let mut item2 = Item::new();
-        item2.name = "item 2".to_string();
-        let mut item2_bis = Item::new();
-        item2_bis.name = "item 2".to_string();
-        let items = vec![item1, item2];
-        let collection = ItemCollection::new(items);
-        match collection.get_item_by_name("item 2") {
-            Some(item_check) => assert!(item2_bis == *item_check),
-            None => panic!("Should have found item"),
-        }
-    }
-    #[test]
-    fn collection_get_by_id() {
-        let mut item1 = Item::new();
-        item1.id = 1;
-        let mut item2 = Item::new();
-        item2.id = 2;
-        let mut item2_bis = Item::new();
-        item2_bis.id = 2;
-        let items = vec![item1, item2];
-        let collection = ItemCollection::new(items);
-        match collection.get_item_by_id(2) {
-            Some(item_check) => assert!(item2_bis == *item_check),
-            None => panic!("Should have found item"),
         }
     }
 }
@@ -140,43 +83,6 @@ impl<T: GameTraits> ItemCollection<T> {
     }
 }
 
-#[cfg(test)]
-mod collection_games_test {
-    use super::*;
-    use models::Game;
-    #[test]
-    fn collection_get_by_tag() {
-        let mut games: Vec<Game> = Vec::new();
-        let mut g1 = Game::new();
-        g1.name = "to be found".to_string();
-        g1.tags = vec!["tag1".to_string()];
-        games.push(g1);
-        let mut g2 = Game::new();
-        g2.name = "not to be found".to_string();
-        g2.tags = vec!["tag2".to_string()];
-        games.push(g2);
-        let collection = ItemCollection::new(games);
-        let g1_test = collection.get_item_with_tag("tag1");
-        assert_eq!(g1_test[0].name, "to be found".to_string());
-        assert_eq!(g1_test.len(), 1);
-    }
-    #[test]
-    fn collection_get_by_genre() {
-        let mut games: Vec<Game> = Vec::new();
-        let mut g1 = Game::new();
-        g1.name = "to be found".to_string();
-        g1.genres = vec!["ge1".to_string()];
-        games.push(g1);
-        let mut g2 = Game::new();
-        g2.name = "not to be found".to_string();
-        g2.genres = vec!["ge2".to_string()];
-        games.push(g2);
-        let collection = ItemCollection::new(games);
-        let g1_test = collection.get_item_with_genre("ge1");
-        assert_eq!(g1_test[0].name, "to be found".to_string());
-        assert_eq!(g1_test.len(), 1);
-    }
-}
 /// # DataBase
 /// Store the game database in three different collection:
 /// - a games collection
@@ -292,5 +198,99 @@ impl DataBase {
     /// Return the number of genres in the database
     pub fn get_genres_count(&self) -> usize {
         self.genres.count
+    }
+}
+
+/*-------------------------- TESTS --------------------------------*/
+#[cfg(test)]
+mod test_collection_items_methods {
+    use super::*;
+    use models::Item;
+    #[test]
+    fn new() {
+        let items: Vec<Item> = Vec::new();
+        let collection = ItemCollection::new(items);
+        assert_eq!(collection.count, 0);
+        let item = Item::new();
+        let items = vec![item];
+        let collection = ItemCollection::new(items);
+        assert_eq!(collection.count, 1);
+    }
+    #[test]
+    fn add_item() {
+        let items: Vec<Item> = Vec::new();
+        let mut collection = ItemCollection::new(items);
+        let item = Item::new();
+        let id = collection.add_item(item);
+        assert_eq!(collection.count, 1);
+        assert_eq!(id, collection.items[0].id);
+    }
+    #[test]
+    fn get_by_name() {
+        let mut item1 = Item::new();
+        item1.name = "item 1".to_string();
+        let mut item2 = Item::new();
+        item2.name = "item 2".to_string();
+        let mut item2_bis = Item::new();
+        item2_bis.name = "item 2".to_string();
+        let items = vec![item1, item2];
+        let collection = ItemCollection::new(items);
+        match collection.get_item_by_name("item 2") {
+            Some(item_check) => assert!(item2_bis == *item_check),
+            None => panic!("Should have found item"),
+        }
+    }
+    #[test]
+    fn get_by_id() {
+        let mut item1 = Item::new();
+        item1.id = 1;
+        let mut item2 = Item::new();
+        item2.id = 2;
+        let mut item2_bis = Item::new();
+        item2_bis.id = 2;
+        let items = vec![item1, item2];
+        let collection = ItemCollection::new(items);
+        match collection.get_item_by_id(2) {
+            Some(item_check) => assert!(item2_bis == *item_check),
+            None => panic!("Should have found item"),
+        }
+    }
+}
+
+#[cfg(test)]
+mod test_collection_games_methods {
+    use super::*;
+    use models::Game;
+    #[test]
+    fn get_by_tag() {
+        let mut games: Vec<Game> = Vec::new();
+        let mut g1 = Game::new();
+        g1.name = "to be found".to_string();
+        g1.tags = vec!["tag1".to_string()];
+        games.push(g1);
+        let mut g2 = Game::new();
+        g2.name = "not to be found".to_string();
+        g2.tags = vec!["tag2".to_string()];
+        games.push(g2);
+        let collection = ItemCollection::new(games);
+        let g1_test = collection.get_item_with_tag("tag1");
+        assert_eq!(g1_test[0].name, "to be found".to_string());
+        assert_eq!(g1_test.len(), 1);
+    }
+    #[test]
+    fn get_by_genre() {
+        let mut games: Vec<Game> = Vec::new();
+        let mut g1 = Game::new();
+        g1.name = "to be found".to_string();
+        g1.genres = vec!["ge1".to_string()];
+        games.push(g1);
+        let mut g2 = Game::new();
+        g2.name = "not to be found".to_string();
+        g2.genres = vec!["ge2".to_string()];
+        games.push(g2);
+        let collection = ItemCollection::new(games);
+        let g1_test = collection.get_item_with_genre("ge1");
+        assert_eq!(g1_test[0].name, "to be found".to_string());
+        assert_eq!(g1_test.len(), 1);
     }
 }
