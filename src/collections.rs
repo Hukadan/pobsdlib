@@ -18,24 +18,10 @@ impl<T: ItemTraits> ItemCollection<T> {
         }
     }
 }
-impl<T: ItemTraits + ItemTraitsMut> ItemCollection<T> {
-    /// Adds an item and returns the item id.
-    pub fn add_item(&mut self, mut item: T) -> usize {
-        self.count += 1;
-        item.set_id(self.count);
-        self.items.push(item);
-        self.count
-    }
+impl<T: ItemTraits> ItemCollection<T> {
     /// Returns a refrence the item corresponding to the id if it exists, None otherwise.
     pub fn get_item_by_id(&self, id: usize) -> Option<&T> {
         match self.items.get(id - 1) {
-            Some(item) => Some(item),
-            None => None,
-        }
-    }
-    /// Returns a mutable refrence the item corresponding to the id if it exists, None otherwise.
-    pub fn get_item_by_id_mut(&mut self, id: usize) -> Option<&mut T> {
-        match self.items.get_mut(id - 1) {
             Some(item) => Some(item),
             None => None,
         }
@@ -44,6 +30,22 @@ impl<T: ItemTraits + ItemTraitsMut> ItemCollection<T> {
     pub fn get_item_by_name(&self, name: &str) -> Option<&T> {
         // assumre there is only one element with a given name
         match self.items.iter().find(|&item| item.get_name() == name) {
+            Some(item) => Some(item),
+            None => None,
+        }
+    }
+}
+impl<T: ItemTraits + ItemTraitsMut> ItemCollection<T> {
+    /// Adds an item and returns the item id.
+    pub fn add_item(&mut self, mut item: T) -> usize {
+        self.count += 1;
+        item.set_id(self.count);
+        self.items.push(item);
+        self.count
+    }
+    /// Returns a mutable refrence the item corresponding to the id if it exists, None otherwise.
+    pub fn get_item_by_id_mut(&mut self, id: usize) -> Option<&mut T> {
+        match self.items.get_mut(id - 1) {
             Some(item) => Some(item),
             None => None,
         }
