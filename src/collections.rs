@@ -60,36 +60,38 @@ impl<T: ItemTraits + ItemTraitsMut> ItemCollection<T> {
     }
 }
 
-impl<T: GameTraits + ItemTraits > ItemCollection<T> {
-    /// Returns a vector of references to items corresponding to the tag.
-    pub fn get_item_with_tag<'a>(&'a self, tag_name: &str) -> ItemCollection<&T>
-    where 
-    &'a T: GameTraits + ItemTraits
+impl<T: GameTraits + ItemTraits> ItemCollection<T> {
+    pub fn get_item_with_field<'a>(
+        &'a self,
+        field_name: &str,
+        field_value: &str,
+    ) -> ItemCollection<&T>
+    where
+        &'a T: GameTraits + ItemTraits,
     {
         let gs = self
             .items
             .iter()
-            .filter(|&item| item.get_tags().contains(&tag_name.to_string()));
+            .filter(|&item| item.field_contains(&field_name, &field_value));
         let mut games: Vec<&T> = Vec::new();
         for game in gs {
             games.push(game);
         }
         ItemCollection::new(games)
     }
-    /// Returns a vector of references to items corresponding to the genre.
-    pub fn get_item_with_genre<'a>(&'a self, genre_name: &str) -> ItemCollection<&T> 
-    where 
-    &'a T: GameTraits + ItemTraits 
+    /// Returns a vector of references to items corresponding to the tag.
+    pub fn get_item_with_tag<'a>(&'a self, tag_name: &str) -> ItemCollection<&T>
+    where
+        &'a T: GameTraits + ItemTraits,
     {
-        let gs = self
-            .items
-            .iter()
-            .filter(|&item| item.get_genres().contains(&genre_name.to_string()));
-        let mut games: Vec<&T> = Vec::new();
-        for game in gs {
-            games.push(game);
-        }
-        ItemCollection::new(games)
+        self.get_item_with_field("Tags", tag_name)
+    }
+    /// Returns a vector of references to items corresponding to the genre.
+    pub fn get_item_with_genre<'a>(&'a self, genre_name: &str) -> ItemCollection<&T>
+    where
+        &'a T: GameTraits + ItemTraits,
+    {
+        self.get_item_with_field("Genre", genre_name)
     }
 }
 
@@ -178,28 +180,12 @@ impl DataBase {
         self.games.get_item_by_id(id)
     }
     /// Returns a vector of references to games corresponding to the tag.
-    pub fn get_games_by_tag(&self, name: &str) -> Vec<&Game> {
-        let mut games: Vec<&Game> = Vec::new();
-        if let Some(tag) = self.tags.get_item_by_name(name) {
-            for &id in &tag.games {
-                if let Some(game) = self.games.get_item_by_id(id) {
-                    games.push(game);
-                }
-            }
-        }
-        games
+    pub fn get_games_by_tag(&self, name: &str) -> ItemCollection<&Game> {
+        self.games.get_item_with_tag(name)
     }
     /// Returns a vector of references to games corresponding to the genre.
-    pub fn get_games_by_genre(&self, name: &str) -> Vec<&Game> {
-        let mut games: Vec<&Game> = Vec::new();
-        if let Some(genre) = self.genres.get_item_by_name(name) {
-            for &id in &genre.games {
-                if let Some(game) = self.games.get_item_by_id(id) {
-                    games.push(game);
-                }
-            }
-        }
-        games
+    pub fn get_games_by_genre(&self, name: &str) -> ItemCollection<&Game> {
+        self.games.get_item_with_genre(name)
     }
     /// Return the number of tags in the database
     pub fn get_tags_count(&self) -> usize {
