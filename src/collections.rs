@@ -10,7 +10,7 @@ pub struct ItemCollection<T> {
     pub items: Vec<T>,
 }
 
-impl<T: ItemTraits> ItemCollection<T> {
+impl<T> ItemCollection<T> {
     pub fn new(items: Vec<T>) -> Self {
         Self {
             count: items.len(),
@@ -72,7 +72,7 @@ impl<T: GameTraits + ItemTraits> ItemCollection<T> {
         let gs = self
             .items
             .iter()
-            .filter(|&item| item.field_contains(&field_name, &field_value));
+            .filter(|&item| item.field_contains(field_name, field_value));
         let mut games: Vec<&T> = Vec::new();
         for game in gs {
             games.push(game);
@@ -190,6 +190,14 @@ impl DataBase {
     /// Return the number of tags in the database
     pub fn get_tags_count(&self) -> usize {
         self.tags.count
+    }
+    /// Return the tags in the database
+    pub fn get_tag_names(&self) -> ItemCollection<&str> {
+        let mut tags: Vec<&str> = Vec::new();
+        for tag in &self.tags.items {
+            tags.push(tag.name.as_str());
+        }
+        ItemCollection::new(tags)
     }
     /// Return the number of genres in the database
     pub fn get_genres_count(&self) -> usize {
