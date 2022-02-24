@@ -1,5 +1,5 @@
 use crate::collections::ItemCollection;
-use crate::models::{Field, Game, GameTraits, Item, ItemTraits};
+use crate::models::{Field, Game, GameTraitsMut, Item, ItemTraitsMut};
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
