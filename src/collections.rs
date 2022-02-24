@@ -1,4 +1,4 @@
-use crate::models::{Game, GameTraits, Item, ItemTraits};
+use crate::models::{Game, GameTraits, Item, ItemTraits, ItemTraitsMut};
 use crate::utils::{load_database, load_genres_from_games, load_tags_from_games};
 
 /// This collection can store items or games.
@@ -17,6 +17,8 @@ impl<T: ItemTraits> ItemCollection<T> {
             items,
         }
     }
+}
+impl<T: ItemTraits + ItemTraitsMut> ItemCollection<T> {
     /// Adds an item and returns the item id.
     pub fn add_item(&mut self, mut item: T) -> usize {
         self.count += 1;
@@ -56,9 +58,12 @@ impl<T: ItemTraits> ItemCollection<T> {
     }
 }
 
-impl<T: GameTraits> ItemCollection<T> {
+impl<T: GameTraits + ItemTraits > ItemCollection<T> {
     /// Returns a vector of references to items corresponding to the tag.
-    pub fn get_item_with_tag(&self, tag_name: &str) -> Vec<&T> {
+    pub fn get_item_with_tag<'a>(&'a self, tag_name: &str) -> ItemCollection<&T>
+    where 
+    &'a T: GameTraits + ItemTraits
+    {
         let gs = self
             .items
             .iter()
@@ -67,10 +72,13 @@ impl<T: GameTraits> ItemCollection<T> {
         for game in gs {
             games.push(game);
         }
-        games
+        ItemCollection::new(games)
     }
     /// Returns a vector of references to items corresponding to the genre.
-    pub fn get_item_with_genre(&self, genre_name: &str) -> Vec<&T> {
+    pub fn get_item_with_genre<'a>(&'a self, genre_name: &str) -> ItemCollection<&T> 
+    where 
+    &'a T: GameTraits + ItemTraits + ItemTraitsMut
+    {
         let gs = self
             .items
             .iter()
@@ -79,7 +87,7 @@ impl<T: GameTraits> ItemCollection<T> {
         for game in gs {
             games.push(game);
         }
-        games
+        ItemCollection::new(games)
     }
 }
 
