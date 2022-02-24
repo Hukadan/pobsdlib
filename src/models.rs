@@ -213,36 +213,36 @@ impl Game {
     fn get_field(&self, name: &str) -> Field {
         match name {
             "Game" => Field::NewGame(&self.name),
-            "Cover" => Field::SingleItem(&"Cover", &self.cover),
-            "Engine" => Field::SingleItem(&"Engine", &self.engine),
-            "Setup" => Field::SingleItem(&"Setup", &self.setup),
-            "Runtime" => Field::SingleItem(&"Runtime", &self.runtime),
-            "Hints" => Field::SingleItem(&"Hints", &self.hints),
-            "Year" => Field::SingleItem(&"Year", &self.year),
-            "Dev" => Field::SingleItem(&"Dev", &self.dev),
-            "Pub" => Field::SingleItem(&"Pub", &self.publi),
-            "Version" => Field::SingleItem(&"Version", &self.version),
-            "Status" => Field::SingleItem(&"Status", &self.status),
+            "Cover" => Field::SingleItem("Cover", &self.cover),
+            "Engine" => Field::SingleItem("Engine", &self.engine),
+            "Setup" => Field::SingleItem("Setup", &self.setup),
+            "Runtime" => Field::SingleItem("Runtime", &self.runtime),
+            "Hints" => Field::SingleItem("Hints", &self.hints),
+            "Year" => Field::SingleItem("Year", &self.year),
+            "Dev" => Field::SingleItem("Dev", &self.dev),
+            "Pub" => Field::SingleItem("Pub", &self.publi),
+            "Version" => Field::SingleItem("Version", &self.version),
+            "Status" => Field::SingleItem("Status", &self.status),
             "Store" => {
                 let mut stores: Vec<&str> = Vec::new();
                 for store in &self.store {
                     stores.push(store);
                 }
-                Field::MultipleItems(&"Store", stores)
+                Field::MultipleItems("Store", stores)
             }
             "Genre" => {
                 let mut genres: Vec<&str> = Vec::new();
                 for genre in &self.genres {
                     genres.push(genre);
                 }
-                Field::MultipleItems(&"Genre", genres)
+                Field::MultipleItems("Genre", genres)
             }
             "Tags" => {
                 let mut tags: Vec<&str> = Vec::new();
                 for tag in &self.tags {
                     tags.push(tag);
                 }
-                Field::MultipleItems(&"Tags", tags)
+                Field::MultipleItems("Tags", tags)
             }
             _ => panic!("Unkown filed {}", name),
         }
