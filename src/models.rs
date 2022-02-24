@@ -2,14 +2,18 @@ use crate::utils::split_line;
 
 /* ------------------------- TRAITS --------------------------*/
 /// This trait is needed if you use ItemCollection with Item or Game struct.
-pub trait ItemTraits {
+pub trait ItemTraitsMut {
     fn set_id(&mut self, id: usize);
+}
+pub trait ItemTraits {
     fn get_name(&self) -> &str;
 }
 
 /// This trait is needed if you use ItemCollection with Game struct.
-pub trait GameTraits {
+pub trait GameTraitsMut {
     fn update(&mut self, field: Field);
+}
+pub trait GameTraits {
     fn get_tags(&self) -> &Vec<String>;
     fn get_genres(&self) -> &Vec<String>;
 }
@@ -138,11 +142,26 @@ impl Item {
     }
 }
 
-impl ItemTraits for Item {
+impl ItemTraitsMut for Item {
     /// Sets the id of the item.
     fn set_id(&mut self, id: usize) {
         self.id = id;
     }
+}
+impl ItemTraits for Item {
+    /// Returns the name of the item.
+    fn get_name(&self) -> &str {
+        &self.name
+    }
+}
+
+impl ItemTraitsMut for &mut Item {
+    /// Sets the id of the item.
+    fn set_id(&mut self, id: usize) {
+        self.id = id;
+    }
+}
+impl ItemTraits for &Item {
     /// Returns the name of the item.
     fn get_name(&self) -> &str {
         &self.name
@@ -228,18 +247,32 @@ impl Game {
         }
     }
 }
-impl ItemTraits for Game {
+impl ItemTraitsMut for Game {
     /// Sets the id of the game.
     fn set_id(&mut self, id: usize) {
         self.id = id;
     }
+}
+impl ItemTraits for Game {
+    /// Returns the name of the game.
+    fn get_name(&self) -> &str {
+        &self.name
+    }
+}
+impl ItemTraitsMut for &mut Game {
+    /// Sets the id of the game.
+    fn set_id(&mut self, id: usize) {
+        self.id = id;
+    }
+}
+impl ItemTraits for &Game {
     /// Returns the name of the game.
     fn get_name(&self) -> &str {
         &self.name
     }
 }
 
-impl GameTraits for Game {
+impl GameTraitsMut for Game {
     /// Sets one attribute of the game according to the Field enum given.
     /// ```
     /// use pobsdlib::models::{Field,Game,GameTraits};
@@ -297,6 +330,19 @@ impl GameTraits for Game {
             }
         };
     }
+}
+impl GameTraits for Game {
+    /// Returns the tag vector of the game.
+    fn get_tags(&self) -> &Vec<String> {
+        &self.tags
+    }
+    /// Returns the tag vector of the game.
+    fn get_genres(&self) -> &Vec<String> {
+        &self.genres
+    }
+}
+
+impl GameTraits for &Game {
     /// Returns the tag vector of the game.
     fn get_tags(&self) -> &Vec<String> {
         &self.tags
