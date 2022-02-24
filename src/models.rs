@@ -275,7 +275,7 @@ impl ItemTraits for &Game {
 impl GameTraitsMut for Game {
     /// Sets one attribute of the game according to the Field enum given.
     /// ```
-    /// use pobsdlib::models::{Field,Game,GameTraits};
+    /// use pobsdlib::models::{Field,Game,GameTraitsMut};
     ///
     /// let line_str = "Game\tName of the game";
     /// let field = Field::from(line_str);

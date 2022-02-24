@@ -77,7 +77,7 @@ impl<T: GameTraits + ItemTraits > ItemCollection<T> {
     /// Returns a vector of references to items corresponding to the genre.
     pub fn get_item_with_genre<'a>(&'a self, genre_name: &str) -> ItemCollection<&T> 
     where 
-    &'a T: GameTraits + ItemTraits + ItemTraitsMut
+    &'a T: GameTraits + ItemTraits 
     {
         let gs = self
             .items
@@ -282,8 +282,8 @@ mod test_collection_games_methods {
         games.push(g2);
         let collection = ItemCollection::new(games);
         let g1_test = collection.get_item_with_tag("tag1");
-        assert_eq!(g1_test[0].name, "to be found".to_string());
-        assert_eq!(g1_test.len(), 1);
+        assert_eq!(g1_test.items[0].name, "to be found".to_string());
+        assert_eq!(g1_test.count, 1);
     }
     #[test]
     fn get_by_genre() {
@@ -298,7 +298,7 @@ mod test_collection_games_methods {
         games.push(g2);
         let collection = ItemCollection::new(games);
         let g1_test = collection.get_item_with_genre("ge1");
-        assert_eq!(g1_test[0].name, "to be found".to_string());
-        assert_eq!(g1_test.len(), 1);
+        assert_eq!(g1_test.items[0].name, "to be found".to_string());
+        assert_eq!(g1_test.count, 1);
     }
 }
