@@ -1,24 +1,5 @@
 use crate::utils::split_line;
 
-/* ------------------------- TRAITS --------------------------*/
-/// This trait is needed if you use ItemCollection with Item or Game struct.
-pub trait ItemTraitsMut {
-    fn set_id(&mut self, id: usize);
-}
-pub trait ItemTraits {
-    fn get_name(&self) -> &str;
-}
-
-/// This trait is needed if you use ItemCollection with Game struct.
-pub trait GameTraitsMut {
-    fn update(&mut self, field: Field);
-}
-pub trait GameTraits {
-    fn get_tags(&self) -> &Vec<String>;
-    fn get_genres(&self) -> &Vec<String>;
-    fn field_contains(&self, field_name: &str, field_value: &str) -> bool;
-}
-
 /* ------------------------ FIELD ENUM -----------------------*/
 /// # Represent a field generated form a line of the game database
 /// There is three different variants:
@@ -123,7 +104,16 @@ impl<'a> Field<'a> {
     }
 }
 
-/* ------------------------ ITEM STRUCT -------------------------*/
+/* ------------------------ ITEM -------------------------*/
+/// This trait is needed if you use ItemCollection with Item or Game struct.
+pub trait ItemTraits {
+    fn get_name(&self) -> &str;
+}
+
+pub trait ItemTraitsMut {
+    fn set_id(&mut self, id: usize);
+}
+
 /// # Represent an item.
 /// At the moment, only tags and genres are represented this way.
 #[derive(Default, PartialEq)]
@@ -143,16 +133,24 @@ impl Item {
     }
 }
 
-impl ItemTraitsMut for Item {
-    /// Sets the id of the item.
-    fn set_id(&mut self, id: usize) {
-        self.id = id;
-    }
-}
 impl ItemTraits for Item {
     /// Returns the name of the item.
     fn get_name(&self) -> &str {
         &self.name
+    }
+}
+
+impl ItemTraits for &Item {
+    /// Returns the name of the item.
+    fn get_name(&self) -> &str {
+        &self.name
+    }
+}
+
+impl ItemTraitsMut for Item {
+    /// Sets the id of the item.
+    fn set_id(&mut self, id: usize) {
+        self.id = id;
     }
 }
 
@@ -162,14 +160,19 @@ impl ItemTraitsMut for &mut Item {
         self.id = id;
     }
 }
-impl ItemTraits for &Item {
-    /// Returns the name of the item.
-    fn get_name(&self) -> &str {
-        &self.name
-    }
+
+/* ------------------------ GAME -------------------------*/
+/// This trait is needed if you use ItemCollection with Game struct.
+pub trait GameTraits: ItemTraits {
+    fn get_tags(&self) -> &Vec<String>;
+    fn get_genres(&self) -> &Vec<String>;
+    fn field_contains(&self, field_name: &str, field_value: &str) -> bool;
 }
 
-/* ------------------------ GAME STRUCT -------------------------*/
+pub trait GameTraitsMut: ItemTraitsMut {
+    fn update(&mut self, field: Field);
+}
+
 /// # Represent a game
 #[derive(Serialize, Default, PartialEq)]
 pub struct Game {
@@ -248,28 +251,32 @@ impl Game {
         }
     }
 }
-impl ItemTraitsMut for Game {
-    /// Sets the id of the game.
-    fn set_id(&mut self, id: usize) {
-        self.id = id;
-    }
-}
+
 impl ItemTraits for Game {
     /// Returns the name of the game.
     fn get_name(&self) -> &str {
         &self.name
     }
 }
-impl ItemTraitsMut for &mut Game {
+
+impl ItemTraits for &Game {
+    /// Returns the name of the game.
+    fn get_name(&self) -> &str {
+        &self.name
+    }
+}
+
+impl ItemTraitsMut for Game {
     /// Sets the id of the game.
     fn set_id(&mut self, id: usize) {
         self.id = id;
     }
 }
-impl ItemTraits for &Game {
-    /// Returns the name of the game.
-    fn get_name(&self) -> &str {
-        &self.name
+
+impl ItemTraitsMut for &mut Game {
+    /// Sets the id of the game.
+    fn set_id(&mut self, id: usize) {
+        self.id = id;
     }
 }
 
@@ -342,7 +349,7 @@ impl GameTraits for Game {
         &self.genres
     }
     fn field_contains(&self, field_name: &str, field_value: &str) -> bool {
-        match &self.get_field(field_name) {
+        match self.get_field(field_name) {
             Field::NewGame(value) => value.to_lowercase().contains(&field_value.to_lowercase()),
             Field::SingleItem(_, value) => {
                 value.to_lowercase().contains(&field_value.to_lowercase())
@@ -365,7 +372,7 @@ impl GameTraits for &Game {
         &self.genres
     }
     fn field_contains(&self, field_name: &str, field_value: &str) -> bool {
-        match &self.get_field(field_name) {
+        match self.get_field(field_name) {
             Field::NewGame(value) => value.to_lowercase().contains(&field_value.to_lowercase()),
             Field::SingleItem(_, value) => {
                 value.to_lowercase().contains(&field_value.to_lowercase())

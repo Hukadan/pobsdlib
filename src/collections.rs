@@ -18,6 +18,7 @@ impl<T> ItemCollection<T> {
         }
     }
 }
+
 impl<T: ItemTraits> ItemCollection<T> {
     /// Returns a refrence the item corresponding to the id if it exists, None otherwise.
     pub fn get_item_by_id(&self, id: usize) -> Option<&T> {
@@ -35,8 +36,9 @@ impl<T: ItemTraits> ItemCollection<T> {
         }
     }
 }
+
 impl<T: ItemTraits + ItemTraitsMut> ItemCollection<T> {
-    /// Adds an item and returns the item id.
+    /// Adds an item, set and returns the item id.
     pub fn add_item(&mut self, mut item: T) -> usize {
         self.count += 1;
         item.set_id(self.count);
@@ -52,7 +54,7 @@ impl<T: ItemTraits + ItemTraitsMut> ItemCollection<T> {
     }
     /// Returns a mutable reference the item corresponding to the name if it exists, None otherwise.
     pub fn get_item_by_name_mut(&mut self, name: &str) -> Option<&mut T> {
-        // assumre there is only one element with a given name
+        // assume there is only one element with a given name
         match self.items.iter_mut().find(|item| item.get_name() == name) {
             Some(item) => Some(item),
             None => None,
@@ -60,14 +62,14 @@ impl<T: ItemTraits + ItemTraitsMut> ItemCollection<T> {
     }
 }
 
-impl<T: GameTraits + ItemTraits> ItemCollection<T> {
+impl<T: GameTraits> ItemCollection<T> {
     pub fn get_item_with_field<'a>(
         &'a self,
         field_name: &str,
         field_value: &str,
     ) -> ItemCollection<&T>
     where
-        &'a T: GameTraits + ItemTraits,
+        &'a T: GameTraits,
     {
         let gs = self
             .items
@@ -82,14 +84,14 @@ impl<T: GameTraits + ItemTraits> ItemCollection<T> {
     /// Returns a vector of references to items corresponding to the tag.
     pub fn get_item_with_tag<'a>(&'a self, tag_name: &str) -> ItemCollection<&T>
     where
-        &'a T: GameTraits + ItemTraits,
+        &'a T: GameTraits,
     {
         self.get_item_with_field("Tags", tag_name)
     }
     /// Returns a vector of references to items corresponding to the genre.
     pub fn get_item_with_genre<'a>(&'a self, genre_name: &str) -> ItemCollection<&T>
     where
-        &'a T: GameTraits + ItemTraits,
+        &'a T: GameTraits,
     {
         self.get_item_with_field("Genre", genre_name)
     }
