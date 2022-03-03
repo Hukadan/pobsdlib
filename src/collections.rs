@@ -62,37 +62,28 @@ impl<T: ItemTraits + ItemTraitsMut> ItemCollection<T> {
     }
 }
 
-impl<T: GameTraits> ItemCollection<T> {
+impl<Game: GameTraits> ItemCollection<Game> {
     pub fn get_item_with_field<'a>(
         &'a self,
         field_name: &str,
         field_value: &str,
-    ) -> ItemCollection<&T>
-    where
-        &'a T: GameTraits,
-    {
+    ) -> ItemCollection<&Game> {
         let gs = self
             .items
             .iter()
             .filter(|&item| item.field_contains(field_name, field_value));
-        let mut games: Vec<&T> = Vec::new();
+        let mut games: Vec<&Game> = Vec::new();
         for game in gs {
             games.push(game);
         }
         ItemCollection::new(games)
     }
     /// Returns a vector of references to items corresponding to the tag.
-    pub fn get_item_with_tag<'a>(&'a self, tag_name: &str) -> ItemCollection<&T>
-    where
-        &'a T: GameTraits,
-    {
+    pub fn get_item_with_tag<'a>(&'a self, tag_name: &str) -> ItemCollection<&Game> {
         self.get_item_with_field("Tags", tag_name)
     }
     /// Returns a vector of references to items corresponding to the genre.
-    pub fn get_item_with_genre<'a>(&'a self, genre_name: &str) -> ItemCollection<&T>
-    where
-        &'a T: GameTraits,
-    {
+    pub fn get_item_with_genre<'a>(&'a self, genre_name: &str) -> ItemCollection<&Game> {
         self.get_item_with_field("Genre", genre_name)
     }
 }
