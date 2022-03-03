@@ -63,8 +63,8 @@ impl<T: ItemTraits + ItemTraitsMut> ItemCollection<T> {
 }
 
 impl<Game: GameTraits> ItemCollection<Game> {
-    pub fn get_item_with_field<'a>(
-        &'a self,
+    pub fn get_item_with_field(
+        &self,
         field_name: &str,
         field_value: &str,
     ) -> ItemCollection<&Game> {
@@ -79,11 +79,11 @@ impl<Game: GameTraits> ItemCollection<Game> {
         ItemCollection::new(games)
     }
     /// Returns a vector of references to items corresponding to the tag.
-    pub fn get_item_with_tag<'a>(&'a self, tag_name: &str) -> ItemCollection<&Game> {
+    pub fn get_item_with_tag(&self, tag_name: &str) -> ItemCollection<&Game> {
         self.get_item_with_field("Tags", tag_name)
     }
     /// Returns a vector of references to items corresponding to the genre.
-    pub fn get_item_with_genre<'a>(&'a self, genre_name: &str) -> ItemCollection<&Game> {
+    pub fn get_item_with_genre(&self, genre_name: &str) -> ItemCollection<&Game> {
         self.get_item_with_field("Genre", genre_name)
     }
 }
